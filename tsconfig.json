@@ -1,0 +1,30 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
+  "compilerOptions": {
+    "module": "ESNext",
+    "target": "ESNext",
+    "moduleResolution": "Node",
+    "jsx": "preserve",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "types": ["node"],
+    "paths": {
+      "@/*": ["src/app/*"],
+      "@core/*": ["src/core/*"],
+      "@shared/*": ["src/app/shared/*"],
+      "@dto/*": ["src/app/dto/*"],
+      "@modules/*": ["src/app/modules/*"],
+      "@layouts/*": ["src/app/layouts/*"],
+      "@router/*": ["src/app/router/*"],
+      "@store/*": ["src/store/*"]
+    },
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  }
+}

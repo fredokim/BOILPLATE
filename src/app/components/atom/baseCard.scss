@@ -1,0 +1,29 @@
+/* 
+  1) .card 클래스에 Tailwind 유틸리티를 @apply 로 적용 
+  2) scoped global reset이나 추가적인 SCSS가 필요하다면 여기에 작성 
+*/
+
+.card {
+  @apply bg-white rounded-lg shadow-md overflow-hidden;
+
+  /* 예시: 그림자 컬러를 조금 연하게 바꾸고 싶다면 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.075);
+
+  /* 예시: 카드 안쪽에 기본 패딩 더하기 */
+  padding: 1rem;
+}
+
+/* 카드 헤더(옵션) */
+.card-header {
+  @apply border-b border-gray-200 mb-4;
+}
+
+/* 카드 바디(옵션) */
+.card-body {
+  @apply text-gray-700;
+}
+
+/* 카드 푸터(옵션) */
+.card-footer {
+  @apply border-t border-gray-200 mt-4 flex justify-end;
+}

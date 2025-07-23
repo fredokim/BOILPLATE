@@ -1,0 +1,84 @@
+// AUTO-GENERATED
+
+:root[data-theme="light"] {
+  --color-primary: #4f46e5;
+  --color-secondary: #9333ea;
+  --color-accent: #e879f9;
+  --color-success: #10b981;
+  --color-error: #ef4444;
+  --color-warning: #f59e0b;
+  --color-info: #3b82f6;
+  --color-background: #ffffff;
+  --color-text: #111827;
+}
+
+/* utility classes for light */
+.bg-primary { background-color: var(--color-primary); }
+.text-primary { color: var(--color-primary); }
+.border-primary { border-color: var(--color-primary); }
+.bg-secondary { background-color: var(--color-secondary); }
+.text-secondary { color: var(--color-secondary); }
+.border-secondary { border-color: var(--color-secondary); }
+.bg-accent { background-color: var(--color-accent); }
+.text-accent { color: var(--color-accent); }
+.border-accent { border-color: var(--color-accent); }
+.bg-success { background-color: var(--color-success); }
+.text-success { color: var(--color-success); }
+.border-success { border-color: var(--color-success); }
+.bg-error { background-color: var(--color-error); }
+.text-error { color: var(--color-error); }
+.border-error { border-color: var(--color-error); }
+.bg-warning { background-color: var(--color-warning); }
+.text-warning { color: var(--color-warning); }
+.border-warning { border-color: var(--color-warning); }
+.bg-info { background-color: var(--color-info); }
+.text-info { color: var(--color-info); }
+.border-info { border-color: var(--color-info); }
+.bg-background { background-color: var(--color-background); }
+.text-background { color: var(--color-background); }
+.border-background { border-color: var(--color-background); }
+.bg-text { background-color: var(--color-text); }
+.text-text { color: var(--color-text); }
+.border-text { border-color: var(--color-text); }
+
+:root[data-theme="dark"] {
+  --color-primary: #818cf8;
+  --color-secondary: #c084fc;
+  --color-accent: #f472b6;
+  --color-success: #34d399;
+  --color-error: #f87171;
+  --color-warning: #fbbf24;
+  --color-info: #60a5fa;
+  --color-background: #1f2937;
+  --color-text: #f9fafb;
+}
+
+/* utility classes for dark */
+.bg-primary { background-color: var(--color-primary); }
+.text-primary { color: var(--color-primary); }
+.border-primary { border-color: var(--color-primary); }
+.bg-secondary { background-color: var(--color-secondary); }
+.text-secondary { color: var(--color-secondary); }
+.border-secondary { border-color: var(--color-secondary); }
+.bg-accent { background-color: var(--color-accent); }
+.text-accent { color: var(--color-accent); }
+.border-accent { border-color: var(--color-accent); }
+.bg-success { background-color: var(--color-success); }
+.text-success { color: var(--color-success); }
+.border-success { border-color: var(--color-success); }
+.bg-error { background-color: var(--color-error); }
+.text-error { color: var(--color-error); }
+.border-error { border-color: var(--color-error); }
+.bg-warning { background-color: var(--color-warning); }
+.text-warning { color: var(--color-warning); }
+.border-warning { border-color: var(--color-warning); }
+.bg-info { background-color: var(--color-info); }
+.text-info { color: var(--color-info); }
+.border-info { border-color: var(--color-info); }
+.bg-background { background-color: var(--color-background); }
+.text-background { color: var(--color-background); }
+.border-background { border-color: var(--color-background); }
+.bg-text { background-color: var(--color-text); }
+.text-text { color: var(--color-text); }
+.border-text { border-color: var(--color-text); }
+

@@ -1,0 +1,57 @@
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   3. Confirm Dialog 스타일
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+/* 3-1. 모달 오버레이 (반투명 검은 배경) */
+.modal-overlay {
+  position: fixed;
+  inset: 0; /* top:0; right:0; bottom:0; left:0; */
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 900;
+}
+
+/* 3-2. 모달 패널 래퍼: 화면 중앙 정렬 */
+.modal-panel-wrapper {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+/* 3-3. 실제 다이얼로그 박스 */
+.modal-panel {
+  width: 100%;
+  max-width: 24rem; /* 384px */
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  padding: 1.5rem;
+  text-align: left;
+}
+
+/* 제목 */
+.modal-title {
+  font-size: 1.125rem; /* 18px */
+  font-weight: 600;
+  color: #111827; /* 진한 회색 */
+  margin: 0;
+}
+
+/* 메시지(본문 텍스트) */
+.modal-message {
+  margin-top: 0.5rem;
+  font-size: 0.9375rem; /* 15px */
+  color: #4b5563; /* 중간 톤 회색 */
+  line-height: 1.5;
+}
+
+/* 버튼 그룹 래퍼 */
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}

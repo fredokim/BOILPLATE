@@ -1,0 +1,11 @@
+export enum ApiStatusEnum {
+  SUCCESS = "SUCCESS",
+  FAILURE = "FAILURE",
+}
+
+export enum ApiErrorCodeEnum {
+  UNKNOWN = "UNKNOWN",
+  TOKEN_EXPIRED = "TOKEN_EXPIRED",
+  UNAUTHORIZED = "UNAUTHORIZED",
+  VALIDATION_ERROR = "VALIDATION_ERROR",
+}
