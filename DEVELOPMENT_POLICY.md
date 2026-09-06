@@ -125,6 +125,10 @@ work out which of the two files is real.
 three format through ESLint alone. Adding it to all four would be adopting a tool
 three of them are not asking for.
 
+This repository has no lint configuration, because it has no application code —
+two scripts and a CLI, all covered by `tsc --noEmit`. A flat config here would be
+one more file claiming to enforce something.
+
 ---
 
 ## Environment variables
