@@ -235,6 +235,50 @@ interceptor architecture in a way it does not to Next's route handlers.
 
 ---
 
+## The release gate
+
+**`npm run release` in each repository answers one question: is this ready to
+ship.** It runs every gate, names each one, and prints a summary. `--quick`
+skips the heavy ones for the local loop.
+
+It adds no checking. Every gate was already an npm script; what it adds is an
+order, a name, and a report — and it is the same list CI runs, so the two cannot
+drift into disagreeing about what green means. They already had: React's CI ran
+fourteen steps while `check:ci` chained thirteen, and `check:tokens`,
+`check:docs` and `check:generators` were in the chain and not in the workflow.
+The token gate and the generator gate never ran on a pull request.
+
+**It does not stop at the first failure.** A `&&` chain does, and buries which
+of thirteen commands it was in several hundred lines of output. That is not
+hypothetical — moving the documents into `docs/` broke `check:deps`, and the
+chain printed a table of package sizes and an accusation about `hls.js` with no
+hint that the ninth step was the one that failed. One run should tell you
+everything that is wrong.
+
+**A skipped gate is a result, not a pass.** A gate whose tool is missing —
+Docker, a database, a browser — reports `skipped` with the reason and the
+summary refuses to say "ready". Reporting readiness from a run where four gates
+never executed is the failure this whole ecosystem is built against.
+
+### The lists are not the same, deliberately
+
+| | react | next | vue | server |
+| --- | --- | --- | --- | --- |
+| bundle budget, Storybook | ✓ | ✓ | ✓ | — |
+| generated design tokens | ✓ | ✓ | ✓ + SCSS | — |
+| OpenAPI drift | — | — | — | ✓ |
+| Prisma schema and migrations | — | — | — | ✓ |
+| production image | ✓ | — | ✓ | ✓ |
+
+Next has no image gate because it deploys on Render's Node runtime rather than
+from a Dockerfile, so there is no image to build; the equivalent question —
+whether `npm run start` serves the application and whether the backend's address
+stayed out of the client bundle — is its `runtime` job in CI. Forcing the four
+to run the same gates would mean checking things that do not exist, or dropping
+the ones that matter most.
+
+---
+
 ## Contract and CI
 
 The server owns the HTTP contract. Its `openapi.json` is generated, drift-checked
