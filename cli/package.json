@@ -1,0 +1,24 @@
+{
+  "name": "create-fredo-app",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Generates a project from the React, Next, Vue and NestJS boilerplates.",
+  "bin": {
+    "create-fredo-app": "./src/index.ts"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test src/*.test.ts",
+    "check": "npm run typecheck && npm run test"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.4",
+    "typescript": "^5.7.2"
+  }
+}
