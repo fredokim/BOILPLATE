@@ -153,6 +153,70 @@ travel. See that repository's `.env.example`.
 
 ---
 
+## Documentation
+
+**One layout, four repositories.** Everything except the README lives under
+`docs/`, sorted by what it is for rather than what it is about:
+
+| | |
+| --- | --- |
+| `docs/architecture/` | what the boundaries are and why |
+| `docs/api/` | the contract with the backend |
+| `docs/development/` | how to work in the repository |
+| `docs/deployment/` | how it runs in production |
+| `docs/history/` | records of a past state, kept rather than maintained |
+
+A guide that belongs beside the code it describes stays there — Vue's atomic
+components, stores and analytics folders each have their own README, and moving
+those into `docs/` would separate them from the thing a reader is looking at.
+
+**Two rules the check enforces, and one it does not.**
+
+`check:docs` fails when a relative Markdown link does not resolve, and when a
+document cannot be reached by following links from the README. The second is the
+one that mattered: before it, each frontend had twenty-two documents in its root
+that linked to each other zero times, listed in the README as backticked
+filenames. Every one was unreachable, and "is this still true?" had no reader.
+
+What it deliberately does not check is what a document *says*. `check:ai` used to
+assert that `AI_WORKFLOW.md` contained the string "Developer-Owned Decisions", so
+renaming that heading to something clearer failed CI while replacing the
+section's contents with nonsense passed. It also asserted that `package.json`
+contained `"check:ai"` — a check whose remaining job was to notice its own
+removal. It is deleted in all three frontends. **A check that pins prose makes
+documentation worse and calls it quality.**
+
+**Historical documents are exempt from reachability, not from links.** A record
+of a past layout is supposed to describe that layout, and holding it to today's
+paths would destroy the thing it is for. It should still not offer a link that
+goes nowhere. Anything outside `docs/history/` opts out with
+`<!-- doc-check: historical -->`, which is a deliberate act rather than an entry
+in a list somewhere else.
+
+### Consolidation candidates
+
+Recorded rather than acted on, because merging documents is a judgement about
+audience and the overlap below is real but not total.
+
+**The boundary rules are stated three times in every frontend.**
+`AI_DEVELOPMENT_GUIDE.md` states them as instructions to an implementer,
+`CODE_REVIEW_CHECKLIST.md` as questions for a reviewer, and `CONTRIBUTING.md` as
+steps for a contributor. Same rules, three phrasings, and until this stage no
+links between them — so they could drift apart without anyone noticing. The
+candidate is one rules document that the other two link into for their own
+framing.
+
+**`AI_WORKFLOW.md` and `AI_DEVELOPMENT_GUIDE.md` overlap on where AI may draft
+and where the developer decides.** The first is the policy, the second is the
+implementation rules; the boundary between them is not obvious from either.
+
+**`DESIGN_RATIONALE.md` and `ARCHITECTURE.md` both explain why the boundaries
+are where they are**, the first as narrative and the second as rules. Keeping
+both is defensible; keeping both without cross-links was not, and they are
+linked now.
+
+---
+
 ## Dependency and security updates
 
 **`npm audit --audit-level=moderate` on every CI run.** React and Vue run it
