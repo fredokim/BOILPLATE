@@ -22,6 +22,30 @@ the DTO:
 The third is the one that bites. A response arrives, validation fails, and the
 page shows a failure state for a server that answered correctly.
 
+### What the audit actually found
+
+Stage 1 ended with a list of five consolidation candidates. It was reported and
+acted on but never written down, so it is recorded here — with what happened to
+each, which is the part worth keeping.
+
+| Candidate | Where it stood | What happened |
+| --- | --- | --- |
+| The response envelope | Implemented three times: `ApiEnvelope.dto.ts` in React and Next, `api-response.dto.ts` in Vue | Kept separate. Vue's was **wrong** — it described `{ status: "SUCCESS" \| "FAILURE" }`, which no response from this server can satisfy, so validation failed before any call could succeed. Corrected against the spec. |
+| `Auth.dto` | Three different names and shapes: `SessionDto` + `LoginResultDto`, `SessionDto`, `AuthSessionDto` + `AuthSessionUserDto` | Kept separate, now checked. The names differ; what they must accept does not. |
+| `User.dto`, `dashboardDataSource.dto`, `topologySnapshot.dto` | In all three | Kept separate, now checked. |
+| `serverChat.dto` | React and Vue only — Next had none at all | Next gained one during stage 5. A socket carrying the same objects as a validated HTTP path was being cast and trusted. |
+| WebSocket message types | Outside OpenAPI entirely | Became [ADR 0005](0005-websocket-contract-by-shared-types.md). |
+
+Every one of the first four was a candidate for *generation*, and none of them
+was generated. They are checked instead, in the four directions above:
+**18 mapped DTOs in React, 15 in Next, 16 in Vue**, each compared to the
+published specification on every run, with a ratchet so the mapped set cannot
+quietly shrink.
+
+That is the trade this ADR is really about. Generation would have removed the
+duplication; checking removes the *risk* the duplication carries, and leaves the
+code in the repository a person cloned.
+
 ## Decision
 
 **`openapi.json`, generated from the server's decorators, committed to the server
