@@ -75,9 +75,23 @@ export function frontendEnv(example: string, plan: Plan): { path: string; conten
   if (plan.backend === 'none') return null;
 
   if (plan.framework === 'next') {
-    // No NEXT_PUBLIC_ prefix: the browser must not call the backend directly, or
-    // the sameSite=lax refresh cookie would not travel. The route handlers forward.
-    return { path, contents: setEnv(example, 'BACKEND_URL', 'http://127.0.0.1:3001') };
+    /**
+     * Both, always. `BACKEND_URL` decides what the route handlers do and
+     * `NEXT_PUBLIC_DATA_MODE` decides which transports the browser builds, and
+     * `assertDataModeMatches` in the root layout refuses a build where they
+     * disagree — half-connected looks like working software from the UI.
+     *
+     * Setting only the first is what this CLI did on its first CI run: the
+     * generated project installed, typechecked and tested, then failed its own
+     * build. Neither value can be derived from the other, because the address
+     * has to stay off the client — no NEXT_PUBLIC_ prefix, or the browser could
+     * call the backend directly and the sameSite=lax refresh cookie would not
+     * travel.
+     */
+    let next = setEnv(example, 'BACKEND_URL', 'http://127.0.0.1:3001');
+    next = setEnv(next, 'NEXT_PUBLIC_DATA_MODE', 'server');
+
+    return { path, contents: next };
   }
 
   let contents = setEnv(example, 'VITE_DATA_MODE', 'server');

@@ -46,9 +46,11 @@ you are ready.
   `VITE_API_TARGET` pointing at the local server. With `--backend none` no file
   is written at all — every variable is optional and the commented defaults run
   the app on MSW.
-- **Next** gets `.env.local` with an unprefixed `BACKEND_URL`. No
-  `NEXT_PUBLIC_`: the browser must not call the backend directly or the
-  `sameSite=lax` refresh cookie would not travel, so the route handlers forward.
+- **Next** gets `.env.local` with an unprefixed `BACKEND_URL` *and*
+  `NEXT_PUBLIC_DATA_MODE=server`. Both, because `assertDataModeMatches` refuses
+  a build where they disagree — one decides what the route handlers do, the
+  other which transports the browser builds, and neither can be derived from the
+  other because the address has to stay off the client.
 - **The server** gets `.env` with a generated `JWT_SECRET` — it ships empty with
   no fallback, so this is the difference between a project that starts and one
   that does not — a generated seed password, and `CORS_ORIGINS` set to the dev

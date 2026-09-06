@@ -96,6 +96,21 @@ describe('frontendEnv', () => {
     assert.match(env?.contents ?? '', /^BACKEND_URL=http:\/\/127.0.0.1:3001$/m);
     assert.doesNotMatch(env?.contents ?? '', /NEXT_PUBLIC_BACKEND_URL/);
   });
+
+  /**
+   * The two must move together. `assertDataModeMatches` in Next's root layout
+   * refuses a build where one is set and the other is not, because realtime on
+   * mocks while HTTP is live looks like working software from the UI.
+   *
+   * Setting only BACKEND_URL is what this CLI did on its first CI run: the
+   * generated project installed, typechecked and tested, then failed its own
+   * build.
+   */
+  it('sets the browser switch alongside it, or the generated project fails its own build', () => {
+    const env = frontendEnv('# BACKEND_URL=http://127.0.0.1:3001\n', planFor('next', 'nest'));
+
+    assert.match(env?.contents ?? '', /^NEXT_PUBLIC_DATA_MODE=server$/m);
+  });
 });
 
 describe('serverEnv', () => {

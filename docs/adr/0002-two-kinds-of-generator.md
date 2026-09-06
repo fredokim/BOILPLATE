@@ -98,6 +98,18 @@ someone else's decisions.
   generated. Off by default because it is two installs and several minutes; run
   in CI, where a generator whose output does not build is caught by the only
   thing that can catch it.
+
+  It earned its place on the first run. Five of six combinations passed and
+  `next + nest` failed at `build`: the CLI set `BACKEND_URL` and not
+  `NEXT_PUBLIC_DATA_MODE`, and Next's `assertDataModeMatches` refuses a build
+  where those two disagree. The generated project installed, typechecked and
+  passed its tests before failing — nothing short of running the build would
+  have found it.
+
+  The same run exposed a defect in the boilerplate rather than the CLI: Next's
+  `.env.example` documented one of the two variables. Anyone following it landed
+  where the CLI did. All three frontends now run `check:env`, which fails when
+  the app reads a variable the example does not mention.
 - The templates are cloned from GitHub rather than vendored. A vendored copy is
   stale the next day and has no way to know it — it would generate last month's
   boilerplate and report success.
