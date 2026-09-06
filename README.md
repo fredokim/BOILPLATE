@@ -186,6 +186,7 @@ re-litigates or, worse, quietly reverses it.
 | [0005](docs/adr/0005-websocket-contract-by-shared-types.md) | The WebSocket contract is typed frames and validated payloads |
 | [0006](docs/adr/0006-server-state-and-session-state-have-different-owners.md) | Server state and session state have different owners |
 | [0007](docs/adr/0007-refresh-cookie-and-one-origin.md) | The refresh token is a cookie, so the browser must see one origin |
+| [0008](docs/adr/0008-the-repositories-stay-separate.md) | The repositories stay separate — the monorepo question, re-asked with numbers |
 
 0003 through 0007 were written after the fact, from the code that already
 implements them. They are numbered in sequence rather than renumbered to match
