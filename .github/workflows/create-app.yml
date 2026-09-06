@@ -1,0 +1,73 @@
+name: create-app
+
+# Generates a project from the boilerplates and runs its own checks.
+#
+# The point is not that the CLI runs. It is that what comes out installs,
+# typechecks, tests and builds — the failure mode a generator has that nothing
+# else catches, because it only appears in a project nobody has made yet.
+
+on:
+  push:
+    branches: [main]
+    paths: ['cli/**', '.github/workflows/create-app.yml']
+  pull_request:
+    paths: ['cli/**', '.github/workflows/create-app.yml']
+  schedule:
+    # The templates move independently of this CLI. A boilerplate change that
+    # breaks generation would otherwise surface for whoever ran it next.
+    - cron: '30 7 * * *'
+  workflow_dispatch:
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: cli/package-lock.json
+      - run: npm ci
+        working-directory: cli
+      - run: npm run check
+        working-directory: cli
+
+  generate:
+    needs: unit
+    runs-on: ubuntu-latest
+    strategy:
+      # Every combination reports. Stopping at the first failure hides whether
+      # one framework broke or all three did.
+      fail-fast: false
+      matrix:
+        framework: [react, next, vue]
+        backend: [nest, none]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: cli/package-lock.json
+
+      - run: npm ci
+        working-directory: cli
+
+      - name: Generate and verify
+        run: |
+          mkdir -p "$RUNNER_TEMP/generated"
+          cd "$RUNNER_TEMP/generated"
+          node "$GITHUB_WORKSPACE/cli/node_modules/tsx/dist/cli.mjs" \
+            "$GITHUB_WORKSPACE/cli/src/index.ts" \
+            probe-app \
+            --framework ${{ matrix.framework }} \
+            --backend ${{ matrix.backend }} \
+            --yes --verify
+
+      - name: No history was copied
+        run: |
+          if find "$RUNNER_TEMP/generated" -name .git -maxdepth 3 | grep -q .; then
+            echo "A .git directory survived generation."
+            exit 1
+          fi
