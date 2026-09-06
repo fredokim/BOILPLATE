@@ -19,14 +19,20 @@
  * than failed: the document is not wrong, this machine is just missing a
  * directory.
  *
- * Two rules, otherwise unchanged:
+ * Four rules:
  *
  *   1. `npm run x` must be a script in the package.json of wherever the reader is.
  *   2. A backticked repository path must exist here.
+ *   3. A relative Markdown link must resolve.
+ *   4. Every document must be reachable by following links from the README.
+ *
+ * Rules 3 and 4 came from the frontends, where twenty-two documents sat in each
+ * root linking to each other zero times, listed in the README as backticked
+ * filenames rather than links. Every one was unreachable and nobody could tell.
  */
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { dirname, relative, resolve } from "node:path";
 
 const ROOT = resolve(import.meta.dirname, "..");
 const PARENT = process.env.REPO_ROOT ?? resolve(ROOT, "..");
@@ -58,7 +64,31 @@ const SIBLINGS: Readonly<Record<string, string>> = {
   "vue-boilerplate": "vue-boilerplate",
 };
 
-type Problem = { doc: string; kind: "script" | "path"; detail: string };
+type Problem = { doc: string; kind: "script" | "path" | "link" | "orphan"; detail: string };
+
+const KIND_LABEL: Record<Problem["kind"], string> = {
+  script: "no such script",
+  path: "no such path",
+  link: "link goes nowhere",
+  orphan: "nothing links to this document",
+};
+
+/** Where the walk starts. What the README cannot reach, a reader cannot either. */
+const ENTRY = "README.md";
+
+/** Relative links only. An external URL is somebody else's to keep working. */
+function relativeLinks(text: string): string[] {
+  return [...text.matchAll(/\[[^\]]*\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g)]
+    .flatMap((match) => (match[1] === undefined ? [] : [match[1]]))
+    .filter((target) => !/^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i.test(target));
+}
+
+/** `docs/adr/0001-x.md#context` and `./cli/README.md` both name a file. */
+function targetPath(doc: string, target: string): string {
+  const withoutFragment = target.split(/[#?]/)[0] ?? "";
+
+  return relative(ROOT, resolve(ROOT, dirname(doc), withoutFragment)).replace(/\\/g, "/");
+}
 
 /** Where a command in the document would run: this repository, or one beside it. */
 type Location = { label: string; dir: string | null };
@@ -175,10 +205,19 @@ function checkDocument(doc: string, text: string, problems: Problem[]): number {
 function main(): void {
   const problems: Problem[] = [];
   const docs = trackedDocs();
+  const linksOut = new Map<string, string[]>();
   let skipped = 0;
 
   for (const doc of docs) {
     const text = readFileSync(resolve(ROOT, doc), "utf8");
+    const targets = relativeLinks(text).map((target) => targetPath(doc, target));
+
+    linksOut.set(doc, targets);
+
+    for (const target of targets) {
+      if (target === "" || target.startsWith("..")) continue;
+      if (!existsSync(resolve(ROOT, target))) problems.push({ doc, kind: "link", detail: target });
+    }
 
     if (isHistorical(doc, text)) continue;
 
@@ -198,17 +237,37 @@ function main(): void {
     }
   }
 
+  const reached = new Set<string>([ENTRY]);
+  const queue = [ENTRY];
+
+  while (queue.length > 0) {
+    const current = queue.shift();
+    if (current === undefined) continue;
+
+    for (const target of linksOut.get(current) ?? []) {
+      if (!target.endsWith(".md") || reached.has(target)) continue;
+      reached.add(target);
+      queue.push(target);
+    }
+  }
+
+  for (const doc of docs) {
+    if (!reached.has(doc)) problems.push({ doc, kind: "orphan", detail: `not reachable from ${ENTRY}` });
+  }
+
   if (problems.length === 0) {
     const note = skipped > 0 ? `, ${String(skipped)} command(s) skipped in repositories not checked out here` : "";
 
-    console.log(`check:docs — ${String(docs.length)} documents, no stale scripts or paths${note}.`);
+    console.log(
+      `check:docs — ${String(docs.length)} documents, ${String(reached.size)} reachable from ${ENTRY}, nothing stale${note}.`,
+    );
     return;
   }
 
   console.error("Documents reference things that do not exist:\n");
 
   for (const { doc, kind, detail } of problems) {
-    console.error(`  ${doc}: ${kind === "script" ? "no such script" : "no such path"} — ${detail}`);
+    console.error(`  ${doc}: ${KIND_LABEL[kind]} — ${detail}`);
   }
 
   console.error(

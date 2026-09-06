@@ -171,13 +171,35 @@ is identical in all three repositories on purpose, and `npm run realtime:parity`
 reports when it stops being.
 [ADR 0001](docs/adr/0001-realtime-core-stays-duplicated.md) is the argument.
 
+## Decisions
+
+Each records what was decided, what else was considered, and what it costs —
+because the reason is the part that goes missing, and without it the next person
+re-litigates or, worse, quietly reverses it.
+
+| | |
+| --- | --- |
+| [0001](docs/adr/0001-realtime-core-stays-duplicated.md) | The realtime core stays duplicated |
+| [0002](docs/adr/0002-two-kinds-of-generator.md) | Two kinds of generator, and only one of them is a CLI |
+| [0003](docs/adr/0003-four-repositories-not-one.md) | Four repositories, not one |
+| [0004](docs/adr/0004-openapi-is-the-contract.md) | The server's OpenAPI document is the REST contract |
+| [0005](docs/adr/0005-websocket-contract-by-shared-types.md) | The WebSocket contract is typed frames and validated payloads |
+| [0006](docs/adr/0006-server-state-and-session-state-have-different-owners.md) | Server state and session state have different owners |
+| [0007](docs/adr/0007-refresh-cookie-and-one-origin.md) | The refresh token is a cookie, so the browser must see one origin |
+
+0003 through 0007 were written after the fact, from the code that already
+implements them. They are numbered in sequence rather than renumbered to match
+the order the decisions were made: 0001 and 0002 are already referenced from
+commits, pull requests and the policy, and a stable identifier is worth more than
+a tidy chronology.
+
 ## What lives here
 
 | | |
 | --- | --- |
 | **[DEVELOPMENT_POLICY.md](DEVELOPMENT_POLICY.md)** | The rules all four follow, and the ones they deliberately do not share. |
 | **[cli/](cli/README.md)** | `create-fredo-app`. |
-| **[docs/adr/](docs/adr)** | [0001 — the realtime core stays duplicated](docs/adr/0001-realtime-core-stays-duplicated.md) · [0002 — two kinds of generator](docs/adr/0002-two-kinds-of-generator.md) |
+| **[docs/adr/](docs/adr)** | The decisions, with the alternatives and what they cost. See below. |
 | **`scripts/check-realtime-parity.ts`** | `npm run realtime:parity`. Expects the four repositories checked out side by side, or `REPO_ROOT` pointing at their parent. |
 
 No application code lives here. This repository used to hold a Vue starter that
