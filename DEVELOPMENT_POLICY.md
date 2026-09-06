@@ -15,6 +15,22 @@ two have drifted apart by accident — what closing the gap would cost.
 
 ---
 
+## Duplicated code that must stay duplicated
+
+The three frontends each carry their own copy of the realtime core — eleven
+files, about 1,300 lines, identical in all three once line endings and quote
+style are normalised. That is deliberate, and [ADR 0001](docs/adr/0001-realtime-core-stays-duplicated.md)
+is the reasoning.
+
+`npm run realtime:parity` in this repo reports any of those eleven files whose
+three copies have stopped agreeing. It runs in this repo's CI rather than in each
+frontend's, because a coordinated change lands as three PRs and a per-repo gate
+would be red for the second and third by design.
+
+A change to realtime behaviour is three commits. Land all three.
+
+---
+
 ## No shared config packages
 
 The obvious move is a `@fredo/eslint-config`, a `@fredo/tsconfig`, a

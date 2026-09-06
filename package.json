@@ -10,7 +10,8 @@
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview",
     "check": "npm run lint && npm run build",
-    "lint": "eslint \"src/**/*.{js,ts,vue}\" --max-warnings=0"
+    "lint": "eslint \"src/**/*.{js,ts,vue}\" --max-warnings=0",
+    "realtime:parity": "tsx scripts/check-realtime-parity.ts"
   },
   "dependencies": {
     "@headlessui/vue": "^1.7.23",
@@ -48,5 +49,8 @@
     "vite": "^6.3.5",
     "vite-plugin-emit-metadata": "^0.2.0",
     "vue-tsc": "^2.2.8"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }
