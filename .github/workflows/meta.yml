@@ -1,8 +1,11 @@
-name: realtime-parity
+name: meta
 
-# The three frontends each carry their own copy of the realtime core. ADR 0001
-# explains why, and the bet is that the copies stay identical. This is what
-# checks.
+# Checks that need more than this repository.
+#
+# `check:docs` resolves the README's commands against whichever repository the
+# reader would be standing in, and `realtime:parity` compares the three
+# frontends' realtime cores — ADR 0001 explains why they are duplicated, and the
+# bet is that the copies stay identical.
 #
 # It runs here rather than in each frontend's CI on purpose. A coordinated
 # change lands as three PRs that merge one at a time, so a per-repo gate would
@@ -20,7 +23,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  parity:
+  checks:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -43,6 +46,17 @@ jobs:
 
       - run: npm ci
         working-directory: BOILPLATE
+
+      - run: npm run typecheck
+        working-directory: BOILPLATE
+
+      # The README is the ecosystem's entry point and names commands that belong
+      # to the other four repositories. They are checked out above, so the check
+      # can resolve them rather than skip them.
+      - run: npm run check:docs
+        working-directory: BOILPLATE
+        env:
+          REPO_ROOT: ${{ github.workspace }}
 
       - run: npm run realtime:parity
         working-directory: BOILPLATE
